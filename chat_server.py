@@ -36,6 +36,7 @@ class Server:
         self.sonnet = indexer.PIndex("AllSonnets.txt")
         self.keys = {}  # (public_key)
         self.name_2_keys = {}
+        self.scores = {}
 
     def new_client(self, sock):
         # add to all sockets and to new clients
@@ -236,21 +237,12 @@ class Server:
 #                 the "from" guy really, really has had enough
 # ==============================================================================
 
-            elif msg["action"] == 'play':
-                position = msg['position']
-                # state = msg['state']
-                # print(state)
-                from_name = self.logged_sock2name[from_sock]
-                try:
-                    the_guys = self.group.list_me(from_name)[1]
-                    to_sock = self.logged_name2sock[the_guys]
-                    # mysend(to_sock, json.dumps({"action": "play", "position": position, 'state': state}))
-                    mysend(to_sock, json.dumps({"action": "play", "position": position}))
-
-                    # print('try successfully')
-
-                except Exception as e:
-                    print('waiting...')
+            elif msg["action"] == 'get_scores':
+                key = msg.get("key")
+                value = msg.get("value")
+                self.scores[key] = value
+                mysend(from_sock, json.dumps({"action": "get_scores", "scores": self.scores}))
+                
         else:
             # client died unexpectedly
             self.logout(from_sock)
@@ -284,3 +276,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
