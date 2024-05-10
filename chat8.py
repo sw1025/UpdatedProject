@@ -1,16 +1,10 @@
-import tkinter
 import tkinter.messagebox
 import customtkinter
 from CTkListbox import * # for list of users
-import pickle
-import argparse
-import time
 
 from tkinter import *
 # from mttkinter import *
 from tkinter import messagebox
-import time
-from pygame import mixer
 import threading
 from chat_utils import *
 from chat_client_class import *
@@ -21,10 +15,6 @@ import os
 import pickle
 import random
 import runpy
-
-from chat_utils import *
-from chat_client_class import *
-from client_state_machine import *
 
 from pygame import mixer # for music on/off function
 import time # for sending messages function
@@ -87,6 +77,9 @@ class App(customtkinter.CTk):
         self.main_body_label_5.grid(row=5, column=0, pady=10, padx=10)
         self.main_body_label_6 = customtkinter.CTkButton(self.main_body, text='Sign Up', command=self.usrSignUp)
         self.main_body_label_6.grid(row=6, column=0, pady=10, padx=10)
+
+        # self.message = {}
+        # self.scores = {}
     
     def usrLogin(self):
         global usrName
@@ -178,6 +171,33 @@ class App(customtkinter.CTk):
         #
         #signUpBtn = customtkinter.CTkButton(self.signup_main_body, text='Sign up', command=self.usrSignUp,width=13, borderwidth=0).place(x=885, y=515)
 
+    # def add_to_server_dictionary(self, key, value):
+    # # Construct message for adding to server dictionary
+    #     self.message = {
+    #         "action": "get_scores",
+    #         "key": key,
+    #         "value": value
+    #     }
+    #     self.send_message_to_server()
+
+    # def send_message_to_server(self):
+    #     try:
+    #         # Convert message to JSON and send to server
+    #         message_str = json.dumps(self.message)
+    #         client.socket.sendall(message_str.encode())
+    #     except Exception as e:
+    #         print(f"Error sending message to server: {e}")
+
+    # def handle_server_message(self):
+    #     action = self.message.get("action")
+    #     if action == "get_scores":
+    #         self.scores = self.message.get("scores")
+    #         self.display_scores()
+    
+    # def display_scores(self):
+    #     messagebox.showinfo('Scores: ',self.scores.items()) 
+
+
 class Chatbox(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -252,7 +272,7 @@ class Chatbox(customtkinter.CTk):
         self.middle_bottom.grid_rowconfigure(2, weight=1)
         self.middle_label_1 = create_label(self, self.middle_bottom, 0, 0, text='Games')
         self.middle_button_5 = create_button(self, self.middle_bottom, 1, 0, text='Play', command=self.snake)
-        self.middle_button_6 = create_button(self, self.middle_bottom, 2, 0, text='Scoreboard', command=self.snake2)
+        #self.middle_button_6 = create_button(self, self.middle_bottom, 2, 0, text='Scoreboard', command=lambda: App.handle_server_message(self))
 
         ### --- textbox ---
         # message container
@@ -279,8 +299,6 @@ class Chatbox(customtkinter.CTk):
         reading_thread = threading.Thread(target = self.refresh)
         reading_thread.daemon = True
         reading_thread.start()
-
-        self.scoreDict = {}
 
         # set default values
         # sidebar
@@ -367,17 +385,16 @@ class Chatbox(customtkinter.CTk):
     def second_column_music_off(self):
         mixer.music.pause()
     
-    
     def snake(self):
         print("snake game clicked")
-        snake = runpy.run_path(path_name='snake.py')
-        if 'score' in snake:
-            player_score = snake['score']
-            self.scoreDict[self.player] = player_score
+        runpy.run_path(path_name='snake.py')
+        # if 'score' in snake:
+        #     player_score = snake['score']
+        #     App.add_to_server_dictionary(self, usrName, player_score)
 
-    # def snake2(self):
+    # def get_scores(self):
     #     print("scoreboard clicked")
-    #     runpy.run_path(path_name='snakep2.py')
+        
     
 
     # third column
@@ -431,3 +448,4 @@ if __name__ == "__main__":
     app.mainloop()
     chat = Chatbox()
     chat.mainloop()
+
