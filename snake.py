@@ -144,8 +144,8 @@ def check_collisions(snake):
 	return False
 
 # Function to control everything 
-def game_over(): 
-	print("Score:" + score)
+def game_over():
+	print("Score: ",score)
 	canvas.delete(ALL) 
 	canvas.create_text(canvas.winfo_width()/2, 
 					canvas.winfo_height()/2, 
