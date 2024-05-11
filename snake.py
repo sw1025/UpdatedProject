@@ -17,7 +17,7 @@ import random
 # Program in Python to create a Snake Game 
 
 from tkinter import *
-import random 
+import random
 
 # Initialising Dimensions of Game 
 WIDTH = 500
